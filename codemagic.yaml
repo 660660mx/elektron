@@ -1,0 +1,19 @@
+workflows:
+  murod-ai-apk:
+    name: Murod AI APK
+    max_build_duration: 40
+    instance_type: mac_mini_m2
+    environment:
+      java: 17
+    scripts:
+      - name: Build debug APK
+        script: |
+          set -e
+          unzip -q project.zip -d proj
+          cd proj
+          echo "sdk.dir=${ANDROID_SDK_ROOT:-$ANDROID_HOME}" > local.properties
+          curl -sSL https://services.gradle.org/distributions/gradle-8.7-bin.zip -o ../gradle.zip
+          unzip -q ../gradle.zip -d ..
+          ../gradle-8.7/bin/gradle assembleDebug --no-daemon
+    artifacts:
+      - proj/app/build/outputs/apk/debug/*.apk
